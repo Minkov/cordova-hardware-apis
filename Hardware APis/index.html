@@ -1,42 +1,86 @@
 <!DOCTYPE html>
 <!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
 -->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/kendo/kendo.common.min.css"/>
+        <link rel="stylesheet" type="text/css" href="css/kendo/kendo.default.min.css"/>
+        <link rel="stylesheet" type="text/css" href="css/kendo/kendo.mobile.all.min.css"/>
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <script src="js/libs/rsvp.min.js"></script>
+        <script src="js/libs/jquery-1.10.2.js"></script>
+        <script src="js/libs/kendo/kendo.all.min.js"></script>
+        <script src="cordova.js"></script>
         <title>Hello World</title>
     </head>
     <body>
-        <div class="app">
-            <h1>Apache Cordova</h1>
-            <div id="deviceready" class="blink">
-                <p class="event listening">Connecting to Device</p>
-                <p class="event received">Device is Ready</p>
-            </div>
+        <div data-role="view" id="home-view" data-id="home-view">
+            <header data-role="header">
+                <div data-role="navbar">
+                    <a href="#device-view" class="nav-button" data-align="left" data-role="button">Device</a>
+                    <span data-role="view-title"> Home </span>
+                </div>
+            </header>
         </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+
+        <div data-role="view" data-layout="api-layout" id="device-view" data-title="device2" data-id="device-view" data-show="apis.deviceLoaded">
+            <ul id="device-info-list"></ul>
+        </div>
+
+        <div data-role="layout" data-id="api-layout">
+            <header data-role="header">
+                <div data-role="navbar">                 
+                    <span data-role="view-title"></span>
+                    <a data-role="backbutton" class="nav-button" data-align="right">Back</a>   
+                </div>
+            </header>
+        </div>
+
         <script type="text/javascript">
-            app.initialize();
+            $(function() {
+                var app = new kendo.mobile.Application(document.body); 
+                window.apis = {
+                    deviceLoaded: function() {
+                        var deviceInfo = [];
+                        for (var i in device) {
+                            var devicePart = device[i];
+                            if (typeof devicePart != "function") {
+                                deviceInfo.push({
+                                    key:i,
+                                    value:devicePart
+                                });
+                            }
+                        }
+                        $("#device-info-list").kendoMobileListView({
+                            dataSource: deviceInfo,
+                            template: $("#device-part-template").html()
+                        });
+                    }
+                }
+            });
+        </script>
+
+        <script type="text/x-kendo-template" id="device-part-template">
+            <span>${key}</span>: <strong>${value}</strong>
         </script>
     </body>
 </html>
